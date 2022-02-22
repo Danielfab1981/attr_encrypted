@@ -19,7 +19,6 @@ Gem::Specification.new do |s|
   s.homepage = 'http://github.com/attr-encrypted/attr_encrypted'
   s.license = 'MIT'
 
-  s.has_rdoc = false
   s.rdoc_options = ['--line-numbers', '--inline-source', '--main', 'README.rdoc']
 
   s.require_paths = ['lib']
@@ -59,10 +58,4 @@ Gem::Specification.new do |s|
 
   s.cert_chain  = ['certs/saghaulor.pem']
   s.signing_key = File.expand_path("~/.ssh/gem-private_key.pem") if $0 =~ /gem\z/
-
-  s.post_install_message = "\n\n\nWARNING: Several insecure default options and features were deprecated in attr_encrypted v2.0.0.\n
-Additionally, there was a bug in Encryptor v2.0.0 that insecurely encrypted data when using an AES-*-GCM algorithm.\n
-This bug was fixed but introduced breaking changes between v2.x and v3.x.\n
-Please see the README for more information regarding upgrading to attr_encrypted v3.0.0.\n\n\n"
-
 end
