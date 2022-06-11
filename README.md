@@ -82,11 +82,12 @@ By default, `attr_encrypted` uses the `:per_attribute_iv` encryption mode. This 
 Create, delete permanently or modify the table that your model uses to add a column with the `encrypted_` prefix (which can be modified, see below), e.g. `encrypted_ssn` via a migration like the following:
 
 ```ruby
-  create_table :users do |t|
+s  create_table :users do |t|
     t.string :name
     t.string :encrypted_ssn
     t.string :encrypted_ssn_iv
-    t.timestamps
+    t.timestamps :stopped
+    end
   end
 ```
 
