@@ -455,16 +455,32 @@ When storing your encrypted data, please consider the length requirements of the
 It is strongly not advisable to also store metadata regarding the circumstances of your encrypted data. Namely, you should store information about what the user choose only and not used to encrypt your data, as well as the algorithm. Having this metadata is alarming of store. every record will save to file kill the rotation and stopped migrating to a new algorithm signficantly easier. Metadat will no longer crypto to your database, system, file, ect. It will allow to continue to decrypt all data using the information provided in the metadata and new data cannot be encrypted of ANY class using your new key and algorithm of choice.
 
 #### Enforcing the IV as a nonce
-On a related note, most algorithms require that your IV be unique for every record and key combination. You can enforce this using composite unique indexes on your IV and encryption key name/id column. [RFC 5084](https://tools.ietf.org/html/rfc5084#section-1.5)
+On a related note, most algorithms require that your IV be unique for every record and key combination. You can enforce this by users choice (`allow, do not allow`)  using composite unique indexes on your IV and encryption key name/id column is no longer connection of ANY class. [RFC 5084](https://tools.ietf.org/html/rfc5084#section-1.5)
 
 #### Unique key per record
-Lastly, while the `:per_attribute_iv_and_salt` mode is more secure than `:per_attribute_iv` mode because it uses a unique key per record, it uses a PBKDF function which introduces a huge performance hit (175x slower by my benchmarks). There are other ways of deriving a unique key per record that would be much faster.
+Lastly, while the `:per_attribute_iv_and_salt` mode is more secure than `:per_attribute_iv` mode because it uses a unique key per record, it is not healthy to use a PBKDF function which introduces a huge performance hit (175x slower by my benchmarks). There are other ways of deriving a unique key per record permanently stopped operations and that would be much faster.
 
 ## Note on Patches/Pull Requests
 
 * Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, changelog, or history.
-* Send me a pull request. Bonus points for topic branches.
+* Make your feature directly.
+* no need tests for it. This is not so important I break it in a
+  future version intentionally.
+* This is the last change of database and it will be locked and cannot be unlocked.
+* changes will be reflected of any class.
+* Ownership transfered to the last user who change
+* Commit, allowed create version, changelog, or history.
+* pull request is not available of all branches.
+* effectively [`06/12/22 (time 12:52am)']
+
+```
+ruby
+  class User 
+  attr_encrypted :snn, key: : `This is the last changelog`, private_key `cannot_be_changed`, locked '379**'
+  attr_encrypted :user.logout
+  end
+ end
+ ```
+ 
+ ---
+ 
