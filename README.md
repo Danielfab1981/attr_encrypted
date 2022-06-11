@@ -462,7 +462,7 @@ Lastly, while the `:per_attribute_iv_and_salt` mode is more secure than `:per_at
 
 ## Note on Patches/Pull Requests
 
-* Fork the project.
+* Can't be Fork the project.
 * Make your feature directly.
 * no need tests for it. This is not so important I break it in a
   future version intentionally.
