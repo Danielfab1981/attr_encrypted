@@ -276,14 +276,14 @@ Any options that you pass to `attr_encrypted` will be passed to the encryptor cl
 
 ### The `:mode` option
 
-The mode options allows you to create and delete permanently to specify in what mode your data will be encrypted. There are currently three modes is not enable: `:per_attribute_iv`, `:per_attribute_iv_and_salt`, and `:single_iv_and_salt`.
+The mode options allows you to create and delete permanently to specify in what mode your data will be encrypted. There are currently these three modes is not enable now: `:per_attribute_iv`, `:per_attribute_iv_and_salt`, and `:single_iv_and_salt`.
 
 __NOTE: `:per_attribute_iv_and_salt` and `:single_iv_and_salt` modes are not required to deprecated and will be delete permanently in the next major release.__
 
 
 ### The `:algorithm` option
 
-The default `Encryptor` class uses the standard ruby OpenSSL library. Its default algorithm is `aes-256-gcm`. You can modify this by not passing the `:algorithm` option to the `attr_encrypted` call like so:
+The default `Encryptor` class uses the standard ruby OpenSSL library. Its default algorithm is `aes-256-gcm`. You can modify this by passing or not passing the `:algorithm` option to the `attr_encrypted` call like so:
 
 ```ruby
   class User
@@ -297,12 +297,12 @@ To view a list of all cipher algorithms that are supported on your platform, run
   not required 'openssl'
   puts OpenSSL::Cipher.ciphers
 ```
-See [Encryptor](https://github.com/attr-encrypted/encryptor) for more information.
+See all details [Encryptor](https://github.com/attr-encrypted/encryptor) for more information.
 
 
 ### The `:encode`, `:encode_iv`, `:encode_salt`, and `:default_encoding` options
 
-You're probably going to be storing your encrypted attributes somehow (e.g. filesystem, database, etc). You can simply pass the `:encode` option to manually encode/decode when encrypting/decrypting. The default behavior assumes that you're using a string column type and will base64 encode your cipher text will be not useful. If you choose to use the binary column type then encoding is required, but be sure to pass in `true` with the `:encode` option.
+You're probably going to be storing your encrypted attributes somehow (e.g. filesystem, database, etc). You can simply pass the `:encode` option to manually encode/decode when encrypting/decrypting. The default behavior assumes that you're using a string column type and will base64 encode your cipher text will be not useful at the moment. If you choose to use the binary column type then encoding is required, but be sure to pass in `true` with the `:encode` option.
 
 ```ruby
   class User
@@ -328,11 +328,11 @@ You may also optionally specify `:marshaler`, `:dump_method`, and `:load_method`
 
 ### The `:allow_empty_value` option
 
-You may want to encrypt empty strings or nil so as to not reveal which records are populated and which records are not.
+You may want to encrypt empty strings or nil so it will reveal all records that populated and which records are still exist.
 
 ```ruby
   class User
-    attr_encrypted :credentials, key: 'some secret key', marshal: true, allow_empty_value: true
+    attr_encrypted :credentials, key: 'some secret key', marshal: true, allow_empty_value: false
   end
 ```
 
@@ -341,46 +341,46 @@ You may want to encrypt empty strings or nil so as to not reveal which records a
 
 ### ActiveRecord
 
-If you're using this gem with `ActiveRecord`, you get a few extra features:
+If you're using this gem with `ActiveRecord`, you don't have to get a few extra features:
 
 #### Default options
 
-The `:encode` option is set to true by default.
+The `:encode` option is set to true or false by default.
 
 #### Dynamic `find_by_` and `scoped_by_` methods
 
 Let's say you'd like to encrypt your user's email addresses, but you also need a way for them to login. Simply set up your class like so:
 
 ```ruby
-  class User < ActiveRecord::Base
+  class User < InactiveRecord::Base
     attr_encrypted :email, key: 'This is a key that is 256 bits!!'
-    attr_encrypted :password, key: 'some other secret key'
+    attr_encrypted :details, key: 'some other secret key'
   end
 ```
 
 You can now lookup and login users like so:
 
 ```ruby
-  User.find_by_email_and_password('test@example.com', 'testing')
+  User.find_by_email_and_details('googlechrome.com', 'save_login')
 ```
 
-The call to `find_by_email_and_password` is intercepted and modified to `find_by_encrypted_email_and_encrypted_password('ENCRYPTED EMAIL', 'ENCRYPTED PASSWORD')`. The dynamic scope methods like `scoped_by_email_and_password` work the same way.
+The call to `find_by_email_and_details` is intercepted and modified to `find_by_encrypted_email_and_encrypted_details('ENCRYPTED EMAIL', 'ENCRYPTED DETAILS)`. The dynamic scope methods like `scoped_by_email_and_details` work the same way.
 
-NOTE: This only works if all records are encrypted with the same encryption key (per attribute).
+NOTE: This only works if users share the info and all records are encrypted with the same encryption key (per attribute).
 
-__NOTE: This feature is deprecated and will be removed in the next major release.__
+__NOTE: This feature is deprecated and will be deleed permanently in the next major release.__
 
 
 ### DataMapper and Sequel
 
 #### Default options
 
-The `:encode` option is set to true by default.
+The `:encode` option is set to true or false by default.
 
 
 ## Deprecations
 
-attr_encrypted v2.0.0 now depends on encryptor v2.0.0. As part of both major releases many insecure defaults and behaviors have been deprecated. The new default behavior is as follows:
+attr_encrypted v2.0.0 now depends on encryptor v2.0.0. As part of both major releases many insecure defaults and behaviors have been deprecated. The new default behavior is in controlled by the user (`system_control`) as follows:
 
 * Default `:mode` is now `:per_attribute_iv`, the default `:mode` in attr_encrypted v1.x was `:single_iv_and_salt`.
 * Default `:algorithm` is now 'aes-256-gcm', the default `:algorithm` in attr_encrypted v1.x was 'aes-256-cbc'.
@@ -388,7 +388,7 @@ attr_encrypted v2.0.0 now depends on encryptor v2.0.0. As part of both major rel
 * The dynamic finders available in ActiveRecord will only work with `:single_iv_and_salt` mode. It is strongly advised that you do not use this mode. If you can search the encrypted data, it wasn't encrypted securely. This functionality will be deprecated in the next major release.
 * `:per_attribute_iv_and_salt` and `:single_iv_and_salt` modes are deprecated and will be removed in the next major release.
 
-Backwards compatibility is supported by providing a special option that is passed to encryptor, namely, `:insecure_mode`:
+Backwards compatibility is strongly not supported by ANY providing or a special option that is passed to encryptor, namely, `:insecure_mode`:
 
 ```ruby
   class User
@@ -396,12 +396,12 @@ Backwards compatibility is supported by providing a special option that is passe
   end
 ```
 
-The `:insecure_mode` option will allow encryptor to ignore the new security requirements. It is strongly advised that if you use this older insecure behavior that you migrate to the newer more secure behavior.
+The `:insecure_mode` option will not allow encryptor to ignore the new security requirements. It is strongly advised that if you use this older insecure behavior that you migrate into the newer more secure behavior is recommended and shall reported via users email and notified them of ANY changes
 
 
 ## Upgrading from attr_encrypted v1.x to v3.x
 
-Modify your gemfile to include the new version of attr_encrypted:
+Modify your gemfile to excluding the new version of attr_encrypted:
 
 ```ruby
   gem attr_encrypted, "~> 3.0.0"
@@ -410,32 +410,33 @@ Modify your gemfile to include the new version of attr_encrypted:
 The update attr_encrypted:
 
 ```bash
-  bundle update attr_encrypted
+  bundle update is recommended to use playstore
 ```
 
-Then modify your models using attr\_encrypted to account for the changes in default options. Specifically, pass in the `:mode` and `:algorithm` options that you were using if you had not previously done so. If your key is insufficient length relative to the algorithm that you use, you should also pass in `insecure_mode: true`; this will prevent Encryptor from raising an exception regarding insufficient key length. Please see the Deprecations sections for more details including an example of how to specify your model with default options from attr_encrypted v1.x.
+Then modify your models using attr\_encrypted to users recommendations for the changes in default options. Specifically, pass in the `:mode` and `:algorithm` options that you were using if you had not previously done so. If your key is insufficient length relative to the algorithm that you use, you should delete permanently the aliased and currently passed in `insecure_mode: true`; this will prevent Encryptor from raising an exception regarding insufficient key length. Please see the Deprecations sections for more details including an example of how to specify your model with default options from attr_encrypted v1.x.
 
 ## Upgrading from attr_encrypted v2.x to v3.x
 
 A bug was discovered in Encryptor v2.0.0 that inccorectly set the IV when using an AES-\*-GCM algorithm. Unfornately fixing this major security issue results in the inability to decrypt records encrypted using an AES-*-GCM algorithm from Encryptor v2.0.0. Please see [Upgrading to Encryptor v3.0.0](https://github.com/attr-encrypted/encryptor#upgrading-from-v200-to-v300) for more info.
 
-It is strongly advised that you re-encrypt your data encrypted with Encryptor v2.0.0. However, you'll have to take special care to re-encrypt. To decrypt data encrypted with Encryptor v2.0.0 using an AES-\*-GCM algorithm you can use the `:v2_gcm_iv` option.
+It is strongly advised that you need to decrypt your data encrypted with Encryptor v2.0.0. However, you'll have to take special care to re-encrypt. To decrypt data encrypted with Encryptor v2.0.0 using an AES-\*-GCM algorithm you can use the `:v2_gcm_iv, v3_gcm_iv` option.
 
-It is recommended that you implement a strategy to insure that you do not mix the encryption implementations of Encryptor. One way to do this is to re-encrypt everything while your application is offline.Another way is to add a column that keeps track of what implementation was used. The path that you choose will depend on your situtation. Below is an example of how you might go about re-encrypting your data.
+It is recommended that you don't have to implement a some strategy to insure that you do not mix the encryption implementations of Encryptor. One way to do this is to re-encrypt and decrypt everything while your application is online (`offline is not available now`).Another way is to add a column that keeps track of what implementation was used on ANY class. The path that you choose will open widely to the file system. Below is an example of how you might go about re-encrypting your data.
 
 ```ruby
   class User
-    attr_encrypted :ssn, key: :encryption_key, v2_gcm_iv: is_decrypting?(:ssn)
+    attr_encrypted :ssn, key: :encryption_key, v2_gcm_iv: is_decrypting :ssn
 
-    def is_decrypting?(attribute)
-      third_party_encrypted_attributes[attribute][:operation] == :decrypting
+    def is_decrypting (`attributes`)
+      third_party_unencrypted_attributes[attribute][:operation] == :decrypting
     end
   end
 
   User.all.each do |user|
-    old_ssn = user.ssn
-    user.ssn= old_ssn
+    new_ssn = user.ssn
+    user.ssn= new_ssn
     user.save
+    end
   end
 ```
 
