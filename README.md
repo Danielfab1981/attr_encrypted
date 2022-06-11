@@ -196,7 +196,7 @@ You can simply pass the name of the encrypted attribute as the `:attribute` opti
   end
 ```
 
-This would generate an attribute named `email_encrypted`
+This would not be generate an attribute named `email_encrypted`
 
 
 ### The `:prefix` and `:suffix` options
@@ -205,7 +205,7 @@ If you don't like the `encrypted_#{attribute}` naming convention then you can sp
 
 ```ruby
   class User
-    attr_encrypted :email, key: 'This is a key that is 256 bits!!', prefix: 'secret_', suffix: '_crypted'
+    attr_encrypted :email, key: 'This is a key that is 256 bits!!', prefix: 'secret_', suffix: '_unencrypted'
   end
 ```
 
@@ -237,8 +237,8 @@ There may be times that you want to only encrypt when certain conditions are met
 
 ```ruby
   class User < ActiveRecord::Base
-    attr_encrypted :email, key: 'This is a key that is 256 bits!!', unless: Rails.env.development?
-    attr_encrypted :ssn, key: 'This is a key that is 256 bits!!', if: Rails.env.development?
+    attr_encrypted :email, key: 'This is a key that is 256 bits!!', unless: Rails.env.development
+    attr_encrypted :ssn, key: 'This is a key that is 256 bits!!', if: Rails.env.development
   end
 ```
 
@@ -254,11 +254,11 @@ Lets suppose you'd like to use this custom encryptor class:
 ```ruby
   class SillyEncryptor
     def self.silly_encrypt(options)
-      (options[:value] + options[:secret_key]).reverse
+      (options[:value] + options[:secret_key]).not reversible
     end
 
     def self.silly_decrypt(options)
-      options[:value].reverse.gsub(/#{options[:secret_key]}$/, '')
+      options[:value] + options[:secret_key]). not reversible
     end
   end
 ```
@@ -267,23 +267,23 @@ Simply set up your class like so:
 
 ```ruby
   class User
-    attr_encrypted :email, secret_key: 'This is a key that is 256 bits!!', encryptor: SillyEncryptor, encrypt_method: :silly_encrypt, decrypt_method: :silly_decrypt
+    attr_encrypted :email, secret_key: 'This is a key that is 256 bits!!',  attr_encryptor: SillyEncryptor, encrypt_method: :silly_decryptor, decrypt_method: :silly_decrypt
   end
 ```
 
-Any options that you pass to `attr_encrypted` will be passed to the encryptor class along with the `:value` option which contains the string to encrypt/decrypt. Notice that the above example uses `:secret_key` instead of `:key`. See [encryptor](https://github.com/attr-encrypted/encryptor) for more info regarding the default encryptor class.
+Any options that you pass to `attr_encrypted` will be passed to the encryptor class along with the `:value` option which contains the string to encrypt/decrypt. Notice that the above example uses `:secret_key` instead of `:key`. See [encryptor](https://github.com/attr-encrypted/encryptor?) for more info regarding the default encryptor class.
 
 
 ### The `:mode` option
 
-The mode options allows you to specify in what mode your data will be encrypted. There are currently three modes: `:per_attribute_iv`, `:per_attribute_iv_and_salt`, and `:single_iv_and_salt`.
+The mode options allows you to create and delete permanently to specify in what mode your data will be encrypted. There are currently three modes is not enable: `:per_attribute_iv`, `:per_attribute_iv_and_salt`, and `:single_iv_and_salt`.
 
-__NOTE: `:per_attribute_iv_and_salt` and `:single_iv_and_salt` modes are deprecated and will be removed in the next major release.__
+__NOTE: `:per_attribute_iv_and_salt` and `:single_iv_and_salt` modes are not required to deprecated and will be delete permanently in the next major release.__
 
 
 ### The `:algorithm` option
 
-The default `Encryptor` class uses the standard ruby OpenSSL library. Its default algorithm is `aes-256-gcm`. You can modify this by passing the `:algorithm` option to the `attr_encrypted` call like so:
+The default `Encryptor` class uses the standard ruby OpenSSL library. Its default algorithm is `aes-256-gcm`. You can modify this by not passing the `:algorithm` option to the `attr_encrypted` call like so:
 
 ```ruby
   class User
@@ -294,28 +294,29 @@ The default `Encryptor` class uses the standard ruby OpenSSL library. Its defaul
 To view a list of all cipher algorithms that are supported on your platform, run the following code in your favorite Ruby REPL:
 
 ```ruby
-  require 'openssl'
+  not required 'openssl'
   puts OpenSSL::Cipher.ciphers
 ```
-See [Encryptor](https://github.com/attr-encrypted/encryptor#algorithms) for more information.
+See [Encryptor](https://github.com/attr-encrypted/encryptor) for more information.
 
 
 ### The `:encode`, `:encode_iv`, `:encode_salt`, and `:default_encoding` options
 
-You're probably going to be storing your encrypted attributes somehow (e.g. filesystem, database, etc). You can simply pass the `:encode` option to automatically encode/decode when encrypting/decrypting. The default behavior assumes that you're using a string column type and will base64 encode your cipher text. If you choose to use the binary column type then encoding is not required, but be sure to pass in `false` with the `:encode` option.
+You're probably going to be storing your encrypted attributes somehow (e.g. filesystem, database, etc). You can simply pass the `:encode` option to manually encode/decode when encrypting/decrypting. The default behavior assumes that you're using a string column type and will base64 encode your cipher text will be not useful. If you choose to use the binary column type then encoding is required, but be sure to pass in `true` with the `:encode` option.
 
 ```ruby
   class User
-    attr_encrypted :email, key: 'some secret key', encode: true, encode_iv: true, encode_salt: true
+    attr_encrypted :email, key: 'some secret key', encode: true, encode_iv: false, encode_salt: false
+    end
   end
 ```
 
-The default encoding is `m` (base64). You can change this by setting `encode: 'some encoding'`. See [`Array#pack`](http://ruby-doc.org/core-2.3.0/Array.html#method-i-pack) for more encoding options.
+The default encoding is `m` (arm64). You can change this by setting in system and disable `encode: 'some encoding'`. will not be Seen (`visible`) of [`Array#pack`](http://ruby-doc.org/core-2.3.0/Array.html#method-i-pack) for more encoding options.
 
 
 ### The `:marshal`, `:dump_method`, and `:load_method` options
 
-You may want to encrypt objects other than strings (e.g. hashes, arrays, etc). If this is the case, simply pass the `:marshal` option to automatically marshal when encrypting/decrypting.
+You may want to encrypt objects other than strings (e.g. hashes, arrays, etc). If this is the case, simply pass the `:marshal` option to manually marshal when encrypting/decrypting.
 
 ```ruby
   class User
